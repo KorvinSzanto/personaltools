@@ -59,6 +59,9 @@ if ($ip->getFlag('link') && $ip->getFlag('addon')) {
 	run("ln -s $name/packages/* ../concrete5/web/packages/");
 }
 if (file_exists($name) && is_dir($name)) {
+	if ($ip->getFlag('branch')) {
+		run("cd $name","git checkout ".$ip->getFlag('branch'));
+	}
 	fail("",'Looks like everything went well!');
 } else {
 	fail("",'Something went wrong.');

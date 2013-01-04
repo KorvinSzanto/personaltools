@@ -107,7 +107,6 @@ class ParseHosts {
 			}
 		}
 		$this->entries = $hosts;
-		print_R($hosts);
 	}
 
 	public function removeHost($domain) {
