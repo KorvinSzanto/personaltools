@@ -1,0 +1,65 @@
+#!/usr/local/bin/php
+<?php
+require_once 'libraries/cli.php';
+
+class AddpackageInputParse extends InputParse {
+	public $flagMap = [
+		'a'=>'addon',
+		'r'=>'repository',
+		'd'=>'directory',
+		'b'=>'branch',
+		'u'=>'github-user',
+		'l'=>'link',
+		'f'=>'force',
+		'n'=>'defaults'
+	];
+}
+
+
+$ip = new AddpackageInputParse($argv);
+if ($ip->getFlag('defaults')) {
+	$request = ['binary'];
+	$request = array_merge($request,$ip->arguments);
+	foreach ($ip->flags as $flag=>$val) {
+		$request[]="-$flag=$val";
+	}
+	$request[] = '-u=concrete5';
+	$request[] = '-a';
+	$request[] = '-l';
+	$ip = new AddpackageInputParse($request);
+}
+
+$name = $ip->getArgument(0);
+if (!$name) {
+	fail('Invalid Package name');
+}
+chdir('/git/');
+if ($ip->getFlag('addon')) {
+	chdir('addons');
+	$name = str_replace('addon_addon_','addon_',"addon_$name");
+}
+if ($ip->getFlag('repository')) {
+	$repository = $ip->getFlag('repository');
+}
+if ($ip->getFlag('github-user')) {
+	$repository = "git@github.com:".$ip->getFlag('github-user')."/$name";
+}
+if (is_dir("$name")) {
+	if ($ip->getFlag('force')) {
+		run("rm -rf $name");
+	} else if (yesOrNo(getcwd()."/$name already exists, delete?")) {
+		run("rm -r $name");
+	} else {
+		fail("","File already exists.");
+	}
+}
+$gc = runOutput("git clone $repository");
+if ($ip->getFlag('link') && $ip->getFlag('addon')) {
+	if (file_exists("$name/packages") && is_dir("$name/packages"))
+	run("ln -s $name/packages/* ../concrete5/web/packages/");
+}
+if (file_exists($name) && is_dir($name)) {
+	fail("",'Looks like everything went well!');
+} else {
+	fail("",'Something went wrong.');
+}

@@ -1,2 +1,64 @@
-#!/bin/bash
-echo "TEST"
+#!/usr/local/bin/php
+<?php
+require_once 'libraries/parse_hosts.php';
+
+class VhostInputParse extends InputParse {
+	public $flagMap = [
+		'n'=>'servername',
+		'd'=>'documentroot',
+		'domain'=>'servername',
+		'directory'=>'documentroot'
+	];
+}
+
+$ip = new VhostInputParse($argv);
+
+if (!($servername = $ip->getFlag('servername'))) {
+	if (!($servername = $ip->getArgument(0))) {
+		fail('Invalid Domain name.');
+	}
+}
+if (!($documentroot = $ip->getFlag('documentroot'))) {
+	if (!($documentroot = $ip->getArgument(1))) {
+		$documentroot = getcwd();
+	}
+}
+
+if (!preg_match("/^(?:[a-z0-9]{1,}\.)*[a-z0-9]{1,}+$/i",$servername)) {
+	fail('Invalid Domain name.');
+}
+
+$template = "<VirtualHost *:80>
+  ServerName %s
+  DocumentRoot %s
+  <Directory %s>
+    Options +Indexes FollowSymLinks +ExecCGI
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+  </Directory>
+</VirtualHost>";
+try {
+	$vhost = sprintf($template,$servername,$documentroot,$documentroot);
+	file_put_contents("/private/etc/apache2/vhosts/{$servername}.generated.vhost",$vhost);
+} catch (exception $e) {
+	fail('Couldn\'t write to vhosts directory.');
+}
+
+$ip = new ParseHosts();
+$ip->addHost($servername,'127.0.0.1','Generated');
+$ip->_export();
+
+
+out("Added VirtualHost...",
+	"Added Hosts entry...",
+	"Restarting webserver...","");
+
+
+run('webserver 2>/dev/null > /dev/null');
+
+$addr = gethostbyname($servername);
+if (trim($addr) == '127.0.0.1') {
+	fail('VirtualHost successfully created.');
+}
+fail("This looks wrong, make sure this didn't explode.. ADDRESS: $addr");

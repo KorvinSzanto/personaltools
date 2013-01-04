@@ -1,0 +1,27 @@
+#!/usr/local/bin/php
+<?php
+require_once 'libraries/cli.php';
+$ip = new InputParse($argv);
+
+if ($ip->argCount() == 0) {
+	$name = getInput('What should this tool be named?');
+	out();
+	file_put_contents('/git/tools/test', $name);
+} else {
+	$name = $ip->arguments[0];
+}
+
+if (file_exists("/git/tools/$name") && !$ip->getFlag('force')) {
+	fail('This file looks to exist, run with -f to force.');
+}
+
+try {
+	file_put_contents("/git/tools/$name","#!/usr/local/bin/php
+<?php
+require_once 'libraries/cli.php';
+");
+	chmod("/git/tools/$name", "+x");
+} catch (exception $e) {
+	fail('Failed to write to file.');
+}
+out('','Successfully created tool.');
