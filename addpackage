@@ -44,16 +44,28 @@ if ($ip->getFlag('repository')) {
 if ($ip->getFlag('github-user')) {
 	$repository = "git@github.com:".$ip->getFlag('github-user')."/$name";
 }
-if (is_dir("$name")) {
+if (!$repository) {
+	fail('Invalid Repository.');
+}
+
+$directory = $ip->getFlag('directory');
+
+if ($directory) {
+	$dir = $directory;
+} else {
+	$dir = $name;
+}
+if (is_dir("$dir")) {
 	if ($ip->getFlag('force')) {
-		run("rm -rf $name");
-	} else if (yesOrNo(getcwd()."/$name already exists, delete?")) {
-		run("rm -r $name");
+		run("rm -rf $dir");
+	} else if (yesOrNo(getcwd()."/$dir already exists, delete?")) {
+		run("rm -r $dir");
 	} else {
 		fail("","File already exists.");
 	}
 }
-$gc = runOutput("git clone $repository");
+
+$gc = runOutput("git clone $repository $directory");
 if ($ip->getFlag('link') && $ip->getFlag('addon')) {
 	if (file_exists("$name/packages") && is_dir("$name/packages"))
 	run("ln -s $name/packages/* ../concrete5/web/packages/");
