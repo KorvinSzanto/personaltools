@@ -1,3 +1,5 @@
-#!/usr/local/bin/php
+#!/opt/local/bin/php54
 <?php
+// This file doesn't do anything.
+// It loads the library to make sure that the library parses.
 require_once 'libraries/cli.php';

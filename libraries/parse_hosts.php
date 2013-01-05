@@ -16,8 +16,8 @@ class ParseHosts {
 			exit;
 		}
 		$this->rawHosts = explode("\n",str_replace(
-			array("\n\r", "\r\n", "\r"),
-			array("\n",   "\n",   "\n"),
+			["\n\r", "\r\n", "\r"],
+			["\n",   "\n",   "\n"],
 			$this->rawHosts));
 		$this->getEntries();
 	}
@@ -86,7 +86,7 @@ class ParseHosts {
 	private function _parseClean() {
 		$rh = $this->rawHosts;
 
-		$hosts = array();
+		$hosts = [];
 		$category = '';
 		foreach ($rh as $line=>$text) {
 			if (substr($text,0,1) == '#') {
@@ -122,7 +122,7 @@ class ParseHosts {
 	private function _parseRaw() {
 		$rh = $this->rawHosts;
 
-		$hosts = array();
+		$hosts = [];
 		foreach ($rh as $line=>$text) {
 			if (substr(ltrim($text),0,1) == '#') continue;
 			if (!$text) continue;

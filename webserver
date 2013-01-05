@@ -1,9 +1,16 @@
-#!/usr/local/Cellar/php54/5.4.10/bin/php
+#!/opt/local/bin/php54
 <?php
+/**
+ * Settings:
+ */
+$path2httpd = "httpd";
+
+
+
 require 'libraries/cli.php';
 $ip = new InputParse($argv);
 
 elevate();
-run('sudo httpd -k restart');
+run("sudo $path2httpd -k restart");
 
-out('Apache successfully restarted.');
+out('Apache successfully restarted.'); // probably

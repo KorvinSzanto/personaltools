@@ -1,4 +1,4 @@
-#!/usr/local/bin/php
+#!/opt/local/bin/php54
 <?php
 require_once 'libraries/cli.php';
 

@@ -1,22 +1,30 @@
-#!/usr/local/bin/php
+#!/opt/local/bin/php54
 <?php
+/**
+ * Settings:
+ */
+$php54path = "/opt/local/bin/php54";
+$path2httpd = "httpd";
+//////////////////////
+
 require_once 'libraries/cli.php';
 $ip = new InputParse($argv);
 
 if ($ip->argCount() == 0) {
 	$name = getInput('What should this tool be named?');
-	out();
-	file_put_contents('/git/tools/test', $name);
 } else {
 	$name = $ip->arguments[0];
 }
 
+if (!trim($name)) {
+	fail('Invalid name.');
+}
 if (file_exists("/git/tools/$name") && !$ip->getFlag('force')) {
 	fail('This file looks to exist, run with -f to force.');
 }
 
 try {
-	file_put_contents("/git/tools/$name","#!/usr/local/bin/php
+	file_put_contents("/git/tools/$name","#!$php54path
 <?php
 require_once 'libraries/cli.php';
 ");

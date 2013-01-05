@@ -1,5 +1,22 @@
-#!/usr/local/bin/php
+#!/opt/local/bin/php54
 <?php
+/**
+ * Settings:
+ */
+$path2vhostsdir = "/private/etc/apache2/vhosts/";
+
+// Template for your virtualhosts.
+$vhosttemplate = "<VirtualHost *:80>
+  ServerName %s
+  DocumentRoot %s
+  <Directory %s>
+    Options +Indexes FollowSymLinks +ExecCGI
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+  </Directory>
+</VirtualHost>";
+//////////////////////
 require_once 'libraries/parse_hosts.php';
 
 class VhostInputParse extends InputParse {
@@ -15,7 +32,9 @@ $ip = new VhostInputParse($argv);
 
 if (!($servername = $ip->getFlag('servername'))) {
 	if (!($servername = $ip->getArgument(0))) {
-		fail('Invalid Domain name.');
+		if (!($servername = getInput('What would you like the domain to be?'))) {
+			fail('Invalid Domain name.');
+		}
 	}
 }
 if (!($documentroot = $ip->getFlag('documentroot'))) {
@@ -27,20 +46,11 @@ if (!($documentroot = $ip->getFlag('documentroot'))) {
 if (!preg_match("/^(?:[a-z0-9]{1,}\.)*[a-z0-9]{1,}+$/i",$servername)) {
 	fail('Invalid Domain name.');
 }
-
-$template = "<VirtualHost *:80>
-  ServerName %s
-  DocumentRoot %s
-  <Directory %s>
-    Options +Indexes FollowSymLinks +ExecCGI
-    AllowOverride All
-    Order allow,deny
-    Allow from all
-  </Directory>
-</VirtualHost>";
 try {
-	$vhost = sprintf($template,$servername,$documentroot,$documentroot);
-	file_put_contents("/private/etc/apache2/vhosts/{$servername}.generated.vhost",$vhost);
+	// If you change the template, change this.
+	$vhost = sprintf($vhosttemplate,$servername,$documentroot,$documentroot);
+
+	file_put_contents("{$path2vhostsdir}{$servername}.generated.vhost",$vhost);
 } catch (exception $e) {
 	fail('Couldn\'t write to vhosts directory.');
 }
