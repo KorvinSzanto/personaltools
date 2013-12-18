@@ -1,0 +1,7 @@
+#!/bin/bash
+scp /git/imageeditor/web/concrete/css/ccm.image_editor.css korvinte@korvinte.host10.getconcrete5.com:/home/korvinte/www/concrete/css/ccm.image_editor.css
+scp /git/imageeditor/web/concrete/js/image_editor.min.js korvinte@korvinte.host10.getconcrete5.com:/home/korvinte/www/concrete/js/image_editor.min.js
+scp -r /git/imageeditor/web/concrete/css/image_editor/* korvinte@korvinte.host10.getconcrete5.com:/home/korvinte/www/concrete/css/image_editor/
+scp -r /git/imageeditor/web/concrete/elements/image_editor/* korvinte@korvinte.host10.getconcrete5.com:/home/korvinte/www/concrete/elements/image_editor/
+scp -r /git/imageeditor/web/concrete/js/image_editor/* korvinte@korvinte.host10.getconcrete5.com:/home/korvinte/www/concrete/js/image_editor/
+scp -r /git/imageeditor/web/concrete/images/image_editor/* korvinte@korvinte.host10.getconcrete5.com:/home/korvinte/www/concrete/images/image_editor/

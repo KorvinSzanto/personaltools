@@ -1,5 +1,10 @@
-#!/opt/local/bin/php54
+#!/usr/local/bin/php
 <?php
+/**
+ * Settings:
+ */
+$path2git = "git";
+//////////////////////
 require_once 'libraries/cli.php';
 
 class AddpackageInputParse extends InputParse {
@@ -65,7 +70,8 @@ if (is_dir("$dir")) {
 	}
 }
 
-$gc = runOutput("git clone $repository $directory");
+out("Pulling $repository");
+$gc = runOutput("$path2git clone $repository $directory");
 if ($ip->getFlag('link') && $ip->getFlag('addon')) {
 	if (file_exists("$name/packages") && is_dir("$name/packages"))
 	run("ln -s $name/packages/* ../concrete5/web/packages/");

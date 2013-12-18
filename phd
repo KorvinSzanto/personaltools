@@ -1,0 +1,2 @@
+#!/bin/bash
+/opt/local/bin/php54 /git/phabricator/bin/phd "$@"

@@ -1,4 +1,4 @@
-#!/opt/local/bin/php54
+#!/usr/local/bin/php
 <?php
 /**
  * Settings:

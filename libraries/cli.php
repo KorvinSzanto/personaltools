@@ -94,7 +94,7 @@ class InputParse {
 		foreach ($argv as $input) {
 			if (substr($input, 0, 1) == '-') {
 				// Last flag entry takes precedence.
-				$flag = array_pad(explode('=',ltrim(strtolower($input),'-')),2,true);
+				$flag = array_pad(explode('=',ltrim($input,'-')),2,true);
 				if (isset($this->flagMap[$flag[0]])) {
 					$flag[0] = $this->flagMap[$flag[0]];
 				}

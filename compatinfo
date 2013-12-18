@@ -1,0 +1,9 @@
+#!/opt/local/bin/php54
+<?php
+require_once 'libraries/cli.php';
+require_once 'PHP/CompatInfo.php';
+
+$source = $argv[1];
+
+$info = new PHP_CompatInfo();
+$info->parseFile($source);
